@@ -10,11 +10,13 @@ namespace Student_Grades_Management_System {
       Console.Write("SGMS $");
       string input = Console.ReadLine();
       string[] ArgsArr = input.Split(" "); //command = args[0]
-      
-      for(int i = 0; i < ArgsArr.Length; i++) {
-        Console.WriteLine(ArgsArr[i]);
-      }
 
+      //Command Handler
+      switch(args[0]) {
+        case "addstudent":
+          student newStudent = new student();
+          newStudent.addMarks();
+      }
     }
   }
 }
