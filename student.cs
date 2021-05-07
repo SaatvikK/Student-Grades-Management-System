@@ -3,9 +3,9 @@ using System.IO;
 
 namespace Student_Grades_Management_System {
   class student {
-    private addMarks() { 
+    private void addMarks() { 
       Console.WriteLine("-> Amount of Subjects: ");
-      int SubjAmount = Console.ReadLine();
+      int SubjAmount = int.Parse(Console.ReadLine());
       Console.WriteLine("-> Subjects (input format: `[subject] [mark (FLOAT)]`, eg: `physics 50`:");
       
       string[SubjAmount] subjects;
