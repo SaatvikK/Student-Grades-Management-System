@@ -54,19 +54,7 @@ namespace Student_Grades_Management_System {
           }
           Console.WriteLine("===========================");
           break;
-
-        case "remstudent":
-          if(globs.ArgsArr[1] == null) { Console.WriteLine("Please include a student ID! Use `seeids` to see all student IDs."); }
-          var jsonString3 = File.ReadAllText("students.json");
-          dynamic results3 = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString3);  
-          List<jsonStudent> students = results3.ToObject(typeof(List<jsonStudent>));
-
-          for(int i = 0; i < results3.Count; i++) {
-            if(results3[i]["ID"] == globs.ArgsArr[1]) {
-              students.Remove(results3[i]);
-            }
-          }       
-          break;      
+              
         default:
           break;
       }
