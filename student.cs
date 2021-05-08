@@ -7,6 +7,10 @@ using Newtonsoft.Json;
 namespace Student_Grades_Management_System {
   public class jsonStudent {
       public string ID  { get; set; }
+      
+      public string FirstName { get; set; }
+
+      public string SurName { get; set; }
       public string[] subjects { get; set; }
 
       public double[] marks { get; set; }
@@ -16,7 +20,11 @@ namespace Student_Grades_Management_System {
 
 
   class student {
-    public bool addMarks() { 
+    public void addMarks() { 
+      Console.Write("-> First Name: ");
+      string fname = Console.ReadLine();
+      Console.Write("-> Surname: ");
+      string sname = Console.ReadLine();
       Console.Write("-> Amount of Subjects: ");
       int SubjAmount = int.Parse(Console.ReadLine());
       Console.WriteLine("-> Subjects (input format: `[subject] [mark (FLOAT)]`, eg: `physics 50`:");
@@ -32,31 +40,49 @@ namespace Student_Grades_Management_System {
         marks[i] = Double.Parse(inputs[1]);
       }
 
-      //string[][] ReturnVals = new[] {subjects, marks};
-      writeToFile(subjects, marks);
-      return true;
+      writeToFile(subjects, marks, fname, sname);
     }
 
-    public static void writeToFile(string[] subjects, double[] marks) {
+    public static void writeToFile(string[] subjects, double[] marks, string fname, string sname) {
+      var jsonString = File.ReadAllText("students.json");
+      dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+      if(result == null) {
+        //List<jsonStudent> students = new List<jsonStudent>();
+        List<jsonStudent> newList = addToList(new List<jsonStudent>(), subjects, marks, fname, sname);
+        File.WriteAllText(@"students.json", JsonConvert.SerializeObject(newList));
+
+        // serialize JSON directly to a file
+        using(StreamWriter file = File.CreateText(@"students.json")) {
+          JsonSerializer serializer = new JsonSerializer();
+          serializer.Serialize(file, newList);
+        }
+      } else {
+        List<jsonStudent> students = result.ToObject(typeof(List<jsonStudent>));
+        List<jsonStudent> newList = addToList(students, subjects, marks, fname, sname);
+        File.WriteAllText(@"students.json", JsonConvert.SerializeObject(newList));
+
+        // serialize JSON directly to a file
+        using(StreamWriter file = File.CreateText(@"students.json")) {
+          JsonSerializer serializer = new JsonSerializer();
+          serializer.Serialize(file, newList);
+        }
+      }
+    }
+
+    public static List<jsonStudent> addToList(List<jsonStudent> students, string[] subjects, double[] marks, string fname, string sname) {
       double sum = 0;
       for(int i = 0; i < marks.Length; i++) { sum += marks[i]; }
-
+      Random rand = new Random();
       jsonStudent json = new jsonStudent {
-        ID = "3",
+        ID = rand.Next(0, 1000000000).ToString(),
+        FirstName = fname,
+        SurName = sname,
         subjects = subjects,
         marks = marks,
         ave = sum/marks.Length
       };
-
-      List<jsonStudent> students = new List<jsonStudent>();
       students.Add(json);
-      File.WriteAllText(@"students.json", JsonConvert.SerializeObject(students));
-
-      // serialize JSON directly to a file
-      using (StreamWriter file = File.CreateText(@"students.json")) {
-        JsonSerializer serializer = new JsonSerializer();
-        serializer.Serialize(file, students);
-      }
+      return students;
     }
   }
 }
