@@ -26,7 +26,11 @@ namespace Student_Grades_Management_System {
       Console.Write("-> Surname: ");
       string sname = Console.ReadLine();
       Console.Write("-> Amount of Subjects: ");
-      int SubjAmount = int.Parse(Console.ReadLine());
+      int SubjAmount;
+      try { SubjAmount = int.Parse(Console.ReadLine()); } catch(Exception) { 
+        Console.WriteLine("Error! The Amount of Subjects MUST be an integer value!"); 
+        return; 
+      }
       Console.WriteLine("-> Subjects (input format: `[subject] [mark (FLOAT)]`, eg: `physics 50`:");
 
       //string[SubjAmount] subjects;
@@ -36,10 +40,14 @@ namespace Student_Grades_Management_System {
         Console.Write("|| -> Subject #" + i + ": ");
         string input = Console.ReadLine();
         string[] inputs = input.Split(" ");
-        subjects[i] = inputs[0];
-        marks[i] = Double.Parse(inputs[1]);
+        try {
+          subjects[i] = inputs[0];
+          marks[i] = Double.Parse(inputs[1]);
+        } catch(Exception) {
+          Console.WriteLine("Error. Either I fucked up or YOU (you dumbfuck) DIDN'T ENTER A DOUBLE AND INSTEAD ENTERED A STRING. YOU DONT KNOW WHAT STRING MEANS? IDFC. LEARN IT YOU 3000 IQ BIG BRAIN STUPID CHICKEN.");
+          return;
+        }
       }
-
       writeToFile(subjects, marks, fname, sname);
     }
 
@@ -67,6 +75,8 @@ namespace Student_Grades_Management_System {
           serializer.Serialize(file, newList);
         }
       }
+
+      Console.WriteLine("Added user to database! Run `see [ID]` to see that student's information!");
     }
 
     public static List<jsonStudent> addToList(List<jsonStudent> students, string[] subjects, double[] marks, string fname, string sname) {
