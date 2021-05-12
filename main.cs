@@ -25,8 +25,7 @@ namespace Student_Grades_Management_System {
           case "addstudent":
             student newStudent = new student();
             newStudent.addMarks();
-            Console.WriteLine("Added user to database! Run `see [ID]` to see that student's information!");
-            break;
+          break;
           
           case "see":
             var jsonString = File.ReadAllText("students.json");
@@ -45,7 +44,7 @@ namespace Student_Grades_Management_System {
               }
             }
             Console.WriteLine("No student with that ID was found.");
-            break;
+          break;
           
           case "seeids":
             var jsonString2 = File.ReadAllText("students.json");
@@ -55,15 +54,20 @@ namespace Student_Grades_Management_System {
               Console.WriteLine(results[i]["FirstName"].ToObject(typeof(string)).ToUpper() + " " + results[i]["SurName"].ToObject(typeof(string)).ToUpper() + ": " + results[i]["ID"]);
             }
             Console.WriteLine("===========================");
-            break;
+          break;
           
           case "help":
             Console.WriteLine("=== COMMANDS ==");
             Console.WriteLine("`addstudent` - Adds a student to the database.");
             Console.WriteLine("`seeids` - Outputs all student IDs.");
             Console.WriteLine("`see [id]` - Outputs information of a specific student given their ID.");
-            break;
-            
+          break;
+          
+          case "exit":
+            Console.WriteLine("CRTL + C to close.");
+
+          break;
+
           default:
             Console.WriteLine("That is not a valid command! Run `help` to see a list of commands.");
             break;
