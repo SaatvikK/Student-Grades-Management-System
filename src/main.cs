@@ -57,7 +57,7 @@ namespace Student_Grades_Management_System {
           break;
           
           case "help":
-            Console.WriteLine("=== COMMANDS ==");
+            Console.WriteLine("=== COMMANDS ===");
             Console.WriteLine("`addstudent` - Adds a student to the database.");
             Console.WriteLine("`seeids` - Outputs all student IDs.");
             Console.WriteLine("`see [id]` - Outputs information of a specific student given their ID.");
