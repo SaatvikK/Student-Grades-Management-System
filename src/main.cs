@@ -9,8 +9,18 @@ namespace Student_Grades_Management_System {
   }
 
   class main {
+    private static void makeDB() {
+      if(Directory.Exists("database") == false) Directory.CreateDirectory("database");
+      else if(Directory.Exists("database/students") == false) Directory.CreateDirectory("database/students");
+    }
+
     static void Main(string[] args) {
       globals globs = new globals();
+
+      // Making DB
+      main.makeDB();
+      main.makeDB();
+
       Console.WriteLine("Starting...");
       Console.WriteLine("Welcome to SGMS, or the Student Grades Management System...");
       Console.WriteLine("Run `help` to see different commands that can be ran!");
@@ -28,7 +38,7 @@ namespace Student_Grades_Management_System {
           break;
           
           case "see":
-            var jsonString = File.ReadAllText("students.json");
+            var jsonString = File.ReadAllText("database/students");
             dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
             if(result == null) { Console.WriteLine("SGMS database empty! To add a student, run `addstudent`."); break; }
             for(int i = 0; i < result.Count; i++) {

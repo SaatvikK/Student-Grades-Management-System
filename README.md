@@ -1,3 +1,10 @@
 ## Student Grades Management System
 
-A C# console project that uses JSON files to store students grades for each subject and gives an average.
+**Database Update**
+The database has reworked to a collection > document > key-value system.
+Directory/DB Tree:
+database/
+├─ students/
+│  ├─ s1.json
+│  ├─ ...
+│  ├─ sn.json
