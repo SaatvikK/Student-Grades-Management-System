@@ -28,32 +28,40 @@ namespace Student_Grades_Management_System {
           break;
           
           case "see":
-            var jsonString = File.ReadAllText("students.json");
+            var jsonString = File.ReadAllText("../database/students.json");
             dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
-            if(result == null) { Console.WriteLine("SGMS database empty! To add a student, run `addstudent`."); break; }
-            for(int i = 0; i < result.Count; i++) {
-              if(result[i]["ID"] == globs.ArgsArr[1]) {
-                Console.WriteLine("====== " + result[i]["FirstName"].ToObject(typeof(string)).ToUpper() + " " + result[i]["SurName"].ToObject(typeof(string)).ToUpper() + " ======");
-                Console.WriteLine("Student ID: " + result[i]["ID"]);
-                Console.WriteLine("SUBJECTS:");
-                for(int j = 0; j < result[i]["subjects"].Count; j++) {
-                  Console.WriteLine("|| " + result[i]["subjects"][j] + ": " + result[i]["marks"][j].ToString() + " marks.");
+            try {
+              Console.WriteLine(result[0]);
+              for(int i = 0; i < result.Count; i++) {
+                if(result[i]["ID"] == globs.ArgsArr[1]) {
+                  Console.WriteLine("====== " + result[i]["FirstName"].ToObject(typeof(string)).ToUpper() + " " + result[i]["SurName"].ToObject(typeof(string)).ToUpper() + " ======");
+                  Console.WriteLine("Student ID: " + result[i]["ID"]);
+                  Console.WriteLine("SUBJECTS:");
+                  for(int j = 0; j < result[i]["subjects"].Count; j++) {
+                    Console.WriteLine("|| " + result[i]["subjects"][j] + ": " + result[i]["marks"][j].ToString() + " marks.");
+                  }
+                  Console.WriteLine("==============");
+                  return;
                 }
-                Console.WriteLine("==============");
-                return;
               }
+              Console.WriteLine("No student with that ID was found.");
+            } catch {
+              Console.WriteLine("SGMS database empty! To add a student, run `addstudent`.");
             }
-            Console.WriteLine("No student with that ID was found.");
           break;
           
           case "seeids":
-            var jsonString2 = File.ReadAllText("students.json");
+            var jsonString2 = File.ReadAllText("database/students.json");
             dynamic results = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString2);
-            if(results == null) { Console.WriteLine("SGMS database empty! To add a student, run `addstudent`."); break; }
-            for(int i = 0; i < results.Count; i++) {
-              Console.WriteLine(results[i]["FirstName"].ToObject(typeof(string)).ToUpper() + " " + results[i]["SurName"].ToObject(typeof(string)).ToUpper() + ": " + results[i]["ID"]);
+            try {
+              Console.WriteLine(results[0]);
+              for(int i = 0; i < results.Count; i++) {
+                Console.WriteLine(results[i]["FirstName"].ToObject(typeof(string)).ToUpper() + " " + results[i]["SurName"].ToObject(typeof(string)).ToUpper() + ": " + results[i]["ID"]);
+              }
+              Console.WriteLine("===========================");
+            } catch {
+              Console.WriteLine("SGMS database empty! To add a student, run `addstudent`.");
             }
-            Console.WriteLine("===========================");
           break;
           
           case "help":

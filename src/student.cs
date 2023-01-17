@@ -44,7 +44,7 @@ namespace Student_Grades_Management_System {
           subjects[i] = inputs[0];
           marks[i] = Double.Parse(inputs[1]);
         } catch(Exception) {
-          Console.WriteLine("Error. Either I fucked up or YOU (you dumbfuck) DIDN'T ENTER A DOUBLE AND INSTEAD ENTERED A STRING. YOU DONT KNOW WHAT STRING MEANS? IDFC. LEARN IT YOU 3000 IQ BIG BRAIN STUPID CHICKEN.");
+          Console.WriteLine("Error. Double entered, expecting type string.");
           return;
         }
       }
@@ -52,34 +52,41 @@ namespace Student_Grades_Management_System {
     }
 
     public static void writeToFile(string[] subjects, double[] marks, string fname, string sname) {
-      var jsonString = File.ReadAllText("students.json");
-      dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
-      if(result == null) {
-        //List<jsonStudent> students = new List<jsonStudent>();
-        List<jsonStudent> newList = addToList(new List<jsonStudent>(), subjects, marks, fname, sname);
-        File.WriteAllText(@"students.json", JsonConvert.SerializeObject(newList));
-
-        // serialize JSON directly to a file
-        using(StreamWriter file = File.CreateText(@"students.json")) {
-          JsonSerializer serializer = new JsonSerializer();
-          serializer.Serialize(file, newList);
-        }
+      if( new FileInfo("database/students.json").Length == 0) {
+        createJSON(subjects, marks, fname, sname); // Nothing in json, do not try to read file.
       } else {
-        List<jsonStudent> students = result.ToObject(typeof(List<jsonStudent>));
-        List<jsonStudent> newList = addToList(students, subjects, marks, fname, sname);
-        File.WriteAllText(@"students.json", JsonConvert.SerializeObject(newList));
-
-        // serialize JSON directly to a file
-        using(StreamWriter file = File.CreateText(@"students.json")) {
-          JsonSerializer serializer = new JsonSerializer();
-          serializer.Serialize(file, newList);
-        }
+        appendJSON(subjects, marks, fname, sname); // Something in it, read file and append new data.
       }
-
       Console.WriteLine("Added user to database! Run `see [ID]` to see that student's information!");
     }
 
-    public static List<jsonStudent> addToList(List<jsonStudent> students, string[] subjects, double[] marks, string fname, string sname) {
+    private static void appendJSON(string[] subjects, double[] marks, string fname, string sname) {
+      var jsonString = File.ReadAllText("database/students.json");
+      dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+      List<jsonStudent> students = result.ToObject(typeof(List<jsonStudent>));
+      List<jsonStudent> newList = addToList(students, subjects, marks, fname, sname);
+      File.WriteAllText(@"database/students.json", JsonConvert.SerializeObject(newList));
+
+      // serialize JSON directly to a file
+      using(StreamWriter file = File.CreateText(@"database/students.json")) {
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.Serialize(file, newList);
+      }      
+    }
+
+    private static void createJSON(string[] subjects, double[] marks, string fname, string sname) {
+      //List<jsonStudent> students = new List<jsonStudent>();
+      List<jsonStudent> newList = addToList(new List<jsonStudent>(), subjects, marks, fname, sname);
+      File.WriteAllText(@"database/students.json", JsonConvert.SerializeObject(newList));
+
+      // serialize JSON directly to a file
+      using(StreamWriter file = File.CreateText(@"database/students.json")) {
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.Serialize(file, newList);
+      }
+    }
+
+    private static List<jsonStudent> addToList(List<jsonStudent> students, string[] subjects, double[] marks, string fname, string sname) {
       double sum = 0;
       for(int i = 0; i < marks.Length; i++) { sum += marks[i]; }
       Random rand = new Random();
