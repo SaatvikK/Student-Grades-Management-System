@@ -8,8 +8,26 @@ namespace Student_Grades_Management_System {
     public string[] ArgsArr;
   }
 
-  class main {
-    static void Main(string[] args) {
+  class SGMS {
+    public void handler() {
+      globals globs = new globals();
+      Console.WriteLine("Starting...");
+      Console.WriteLine("Welcome to SGMS, or the Student Grades Management System...");
+      Console.WriteLine("Would you like to login to a pre-existing school account [1] or create a new one [2]?");
+      int input = int.Parse(Console.ReadLine());
+      if(input == 1) {}
+        // login
+      else if(input == 2) {
+        school NewSchool = new school();
+        bool res = NewSchool.create();
+        if(res == true) {
+          run();
+        }
+      }
+      Console.WriteLine("Run `help` to see different commands that can be ran!");      
+    }
+
+    public void run() {
       globals globs = new globals();
       Console.WriteLine("Starting...");
       Console.WriteLine("Welcome to SGMS, or the Student Grades Management System...");
@@ -82,4 +100,11 @@ namespace Student_Grades_Management_System {
       }
     }
   }
+
+  class main {
+    static void Main(string[] args) {
+
+    }
+  }
 }
+

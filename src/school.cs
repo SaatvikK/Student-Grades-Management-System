@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 
 namespace Student_Grades_Management_System {
   public class jsonSchool {
-    public string ID  { get; set; }
     public string SchoolName { get; set; }
     public string city { get; set; }
     public string county { get; set; }    
@@ -14,53 +13,54 @@ namespace Student_Grades_Management_System {
   }
 
   public class school {
-    public static bool createSchool() {
-      Console.WriteLine("-> Name of School: ");
+    public bool create() {
+      // Getting school details via CLI user input
+      Console.WriteLine("-> Name of school: ");
       string SchoolName = Console.ReadLine();
-      Console.WriteLine("-> Name of City: ");
+      Console.WriteLine("-> Name of city: ");
       string city = Console.ReadLine();
-      
+      Console.WriteLine("-> Name of county: ");
+      string county = Console.ReadLine();
+      int NumStudents;
+      try { NumStudents = int.Parse(Console.ReadLine()); } catch(Exception) { 
+        Console.WriteLine("Error! The amount of students MUST be an integer value!"); 
+        return false; 
+      }
+
+      try {
+        createDB(SchoolName);
+      } catch { return false; }
+
+      jsonSchool school = createObj(SchoolName, city, county, NumStudents);
+      bool written = writeToFile(school, SchoolName);
+      if(written) return true;
+      else return false;
+    }
+
+    private static void createDB(string SchoolName) {
+      if(Directory.Exists($"database/{SchoolName}")) {
+        throw new InvalidOperationException("School already exists");
+      } else {
+        Directory.CreateDirectory($"database/{SchoolName}");
+        using(FileStream fs = File.Create($"database/{SchoolName}/info.json")) {}
+        using(FileStream fs = File.Create($"database/{SchoolName}/students.json")) {}
+      }
+    }
+    public static bool writeToFile(jsonSchool schoolobj, string SchoolName) {
+
+      File.WriteAllText(@$"database/{SchoolName}/info.json", JsonConvert.SerializeObject(schoolobj));
+
+      // serialize JSON directly to a file
+      using(StreamWriter file = File.CreateText(@$"database/{SchoolName}/info.json")) {
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.Serialize(file, schoolobj);
+      }
       return true;
     }
-    public static void writeToFile(string ID, string SchoolName, string city, string county, string NumStudents) {
-      if( new FileInfo("database/info.json").Length == 0) {
-        createJSON(subjects, marks, fname, sname); // Nothing in json, do not try to read file.
-      } else {
-        appendJSON(subjects, marks, fname, sname); // Something in it, read file and append new data.
-      }
-      Console.WriteLine("Added user to database! Run `see [ID]` to see that student's information!");
-    }
 
-    private static void appendJSON(string[] subjects, double[] marks, string fname, string sname) {
-      var jsonString = File.ReadAllText("database/students.json");
-      dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
-      List<jsonStudent> students = result.ToObject(typeof(List<jsonStudent>));
-      List<jsonStudent> newList = addToList(students, subjects, marks, fname, sname);
-      File.WriteAllText(@"database/students.json", JsonConvert.SerializeObject(newList));
-
-      // serialize JSON directly to a file
-      using(StreamWriter file = File.CreateText(@"database/students.json")) {
-        JsonSerializer serializer = new JsonSerializer();
-        serializer.Serialize(file, newList);
-      }      
-    }
-
-    private static void createJSON(string[] subjects, double[] marks, string fname, string sname) {
-      //List<jsonStudent> students = new List<jsonStudent>();
-      List<jsonStudent> newList = addToList(new List<jsonStudent>(), subjects, marks, fname, sname);
-      File.WriteAllText(@"database/students.json", JsonConvert.SerializeObject(newList));
-
-      // serialize JSON directly to a file
-      using(StreamWriter file = File.CreateText(@"database/students.json")) {
-        JsonSerializer serializer = new JsonSerializer();
-        serializer.Serialize(file, newList);
-      }
-    }
-
-    private static jsonSchool addToList(string ID, string school, string City, string County, double NoStudents) {
+    private static jsonSchool createObj(string school, string City, string County, double NoStudents) {
       Random rand = new Random();
       jsonSchool json = new jsonSchool {
-        ID = rand.Next(0, 1000000000).ToString(),
         SchoolName = school,
         city = City,
         county = County,
