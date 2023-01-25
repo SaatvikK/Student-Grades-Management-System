@@ -1,4 +1,4 @@
-/*using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -14,32 +14,47 @@ namespace Student_Grades_Management_System {
   }
 
   public class school {
-    public static void writeToFile(string ID, string SchoolName, string city, string county, double NoStudents) {
-      var jsonString = File.ReadAllText("info.json");
-      dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
-      if(result == null) {
-        //List<jsonStudent> students = new List<jsonStudent>();
-        jsonSchool InfoJson = addToList( ID, SchoolName, city, county, NoStudents);
-        File.WriteAllText(@"students.json", JsonConvert.SerializeObject(InfoJson));
-
-        // serialize JSON directly to a file
-        using(StreamWriter file = File.CreateText(@"students.json")) {
-          JsonSerializer serializer = new JsonSerializer();
-          serializer.Serialize(file, InfoList);
-        }
+    public static bool createSchool() {
+      Console.WriteLine("-> Name of School: ");
+      string SchoolName = Console.ReadLine();
+      Console.WriteLine("-> Name of City: ");
+      string city = Console.ReadLine();
+      
+      return true;
+    }
+    public static void writeToFile(string ID, string SchoolName, string city, string county, string NumStudents) {
+      if( new FileInfo("database/info.json").Length == 0) {
+        createJSON(subjects, marks, fname, sname); // Nothing in json, do not try to read file.
       } else {
-        List<jsonStudent> schools = result.ToObject(typeof(List<school>));
-        List<jsonStudent> InfoList = addToList(students, subjects, marks, fname, sname);
-        File.WriteAllText(@"students.json", JsonConvert.SerializeObject(InfoList));
-
-        // serialize JSON directly to a file
-        using(StreamWriter file = File.CreateText(@"students.json")) {
-          JsonSerializer serializer = new JsonSerializer();
-          serializer.Serialize(file, InfoList);
-        }
+        appendJSON(subjects, marks, fname, sname); // Something in it, read file and append new data.
       }
-
       Console.WriteLine("Added user to database! Run `see [ID]` to see that student's information!");
+    }
+
+    private static void appendJSON(string[] subjects, double[] marks, string fname, string sname) {
+      var jsonString = File.ReadAllText("database/students.json");
+      dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
+      List<jsonStudent> students = result.ToObject(typeof(List<jsonStudent>));
+      List<jsonStudent> newList = addToList(students, subjects, marks, fname, sname);
+      File.WriteAllText(@"database/students.json", JsonConvert.SerializeObject(newList));
+
+      // serialize JSON directly to a file
+      using(StreamWriter file = File.CreateText(@"database/students.json")) {
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.Serialize(file, newList);
+      }      
+    }
+
+    private static void createJSON(string[] subjects, double[] marks, string fname, string sname) {
+      //List<jsonStudent> students = new List<jsonStudent>();
+      List<jsonStudent> newList = addToList(new List<jsonStudent>(), subjects, marks, fname, sname);
+      File.WriteAllText(@"database/students.json", JsonConvert.SerializeObject(newList));
+
+      // serialize JSON directly to a file
+      using(StreamWriter file = File.CreateText(@"database/students.json")) {
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.Serialize(file, newList);
+      }
     }
 
     private static jsonSchool addToList(string ID, string school, string City, string County, double NoStudents) {
@@ -54,4 +69,4 @@ namespace Student_Grades_Management_System {
       return json;
     }
   }
-}*/
+}

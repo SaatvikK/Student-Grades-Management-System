@@ -28,9 +28,9 @@ namespace Student_Grades_Management_System {
           break;
           
           case "see":
-            var jsonString = File.ReadAllText("../database/students.json");
-            dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
-            try {
+            if( new FileInfo("database/students.json").Length > 0) {
+              var jsonString = File.ReadAllText("../database/students.json");
+              dynamic result = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString);
               Console.WriteLine(result[0]);
               for(int i = 0; i < result.Count; i++) {
                 if(result[i]["ID"] == globs.ArgsArr[1]) {
@@ -45,21 +45,20 @@ namespace Student_Grades_Management_System {
                 }
               }
               Console.WriteLine("No student with that ID was found.");
-            } catch {
+            } else {
               Console.WriteLine("SGMS database empty! To add a student, run `addstudent`.");
             }
           break;
           
           case "seeids":
-            var jsonString2 = File.ReadAllText("database/students.json");
-            dynamic results = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString2);
-            try {
-              Console.WriteLine(results[0]);
-              for(int i = 0; i < results.Count; i++) {
-                Console.WriteLine(results[i]["FirstName"].ToObject(typeof(string)).ToUpper() + " " + results[i]["SurName"].ToObject(typeof(string)).ToUpper() + ": " + results[i]["ID"]);
-              }
+            if( new FileInfo("database/students.json").Length > 0) {
+              var jsonString2 = File.ReadAllText("database/students.json");
+              dynamic results = Newtonsoft.Json.JsonConvert.DeserializeObject(jsonString2);
+                for(int i = 0; i < results.Count; i++) {
+                  Console.WriteLine(results[i]["FirstName"].ToObject(typeof(string)).ToUpper() + " " + results[i]["SurName"].ToObject(typeof(string)).ToUpper() + ": " + results[i]["ID"]);
+                }
               Console.WriteLine("===========================");
-            } catch {
+            } else {
               Console.WriteLine("SGMS database empty! To add a student, run `addstudent`.");
             }
           break;
